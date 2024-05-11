@@ -1,0 +1,26 @@
+package com.phegondev.usersmanagementsystem.dto;
+
+import com.phegondev.usersmanagementsystem.model.enumm.Status;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ParkingRequest {
+    @NotEmpty
+    private String nom;
+    @NotEmpty
+    private String emplacement;
+    @NotNull
+    private int capaciteTotale;
+    @NotNull
+    private int placesDisponibles;
+    @NotNull
+    private Status status;
+}
