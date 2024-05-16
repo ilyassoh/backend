@@ -17,4 +17,6 @@ public interface PlaceRep extends JpaRepository<PlaceModel, Long> {
     List<PlaceModel> findAllByType(Type_Place type);
     List<PlaceModel> findAllByTypeOrStatus(Type_Place type, Status_Place status);
     Page<PlaceModel> findAllByTypeOrStatus(Type_Place type, Status_Place status, Pageable p);
+    long countAllByStatusAndReservationsIsNull(Status_Place status);
+    PlaceModel getPlaceById(Long id); // Méthode ajoutée
 }

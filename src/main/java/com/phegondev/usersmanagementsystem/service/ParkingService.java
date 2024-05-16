@@ -24,9 +24,6 @@ public class ParkingService {
         return parkingRep.findByNom(nom);
     }
     private final ParkingRep parkingRep;
-    public List<ParkingModel> findByEmplacement(String emplacement) {
-        return parkingRep.findByEmplacement(emplacement);
-    }
     public List<ParkingModel> findAll(String se) {
         if(!se.isEmpty()) {
             return parkingRep.findAllByNomContainingOrEmplacementContaining(se,se);
@@ -48,6 +45,9 @@ public class ParkingService {
             list.add(enumValue.name());
         }
         return list;
+    }
+    public ParkingModel findById(Long id) {
+        return parkingRep.findById(id).orElse(null);
     }
     private Status getStatus(String input) {
         for (Status status : Status.values()) {

@@ -43,6 +43,11 @@ public class ClientService {
             return clientRep.findAll(p);
         }
     }
+    public ClientModel getClientById(Long id) {
+        Optional<ClientModel> clientOptional = clientRep.findById(id);
+        return clientOptional.orElse(null);
+    }
+
     public ClientModel createClient(ClientRequest clientReq) {
         ClientModel existingClient = clientRep.findByNumeroMatricule(clientReq.getNumeroMatricule());
         if (existingClient != null) {

@@ -27,19 +27,6 @@ public class ParkingController {
     public ResponseEntity<List<String>> getallStatus() {
         return ResponseEntity.ok(parkingService.getallStatus());
     }
-    @GetMapping("/emplacement/{emplacement}")
-    public ResponseEntity<List<ParkingResp>> findByEmplacement(@PathVariable String emplacement) {
-        List<ParkingModel> parkings = parkingService.findByEmplacement(emplacement);
-        if (parkings != null && !parkings.isEmpty()) {
-            List<ParkingResp> parkingsResp = new ArrayList<>();
-            for (ParkingModel p : parkings) {
-                parkingsResp.add(new ParkingResp(p));
-            }
-            return ResponseEntity.ok(parkingsResp);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
-    }
     @GetMapping("/nom/{nom}")
     public ResponseEntity<ParkingResp> findByNom(@PathVariable String nom) {
         ParkingResp response = new ParkingResp(parkingService.findByNom(nom));
@@ -49,7 +36,15 @@ public class ParkingController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
+    @GetMapping("/{id}")
+    public ResponseEntity<ParkingResp> getParkingById(@PathVariable Long id) {
+        ParkingModel parking = parkingService.findById(id);
+        if (parking != null) {
+            return ResponseEntity.ok(new ParkingResp(parking));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
     @GetMapping
     public ResponseEntity<List<ParkingResp>> findAll(
             @RequestParam(defaultValue = "")String search

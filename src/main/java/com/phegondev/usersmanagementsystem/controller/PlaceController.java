@@ -43,19 +43,13 @@ public class PlaceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @GetMapping("/typeOrStatus")
-    public ResponseEntity<List<PlaceResp>> findAllByTypeOrStatus(
-            @RequestParam(required = false) Type_Place type,
-            @RequestParam(required = false) Status_Place status) {
-        List<PlaceModel> places = placeService.findAllByTypeOrStatus(type, status);
-        if (places != null && !places.isEmpty()) {
-            List<PlaceResp> placesResp = new ArrayList<>();
-            for (PlaceModel place : places) {
-                placesResp.add(new PlaceResp(place));
-            }
-            return ResponseEntity.ok(placesResp);
+    @GetMapping("/{id}")
+    public ResponseEntity<PlaceResp> getPlaceById(@PathVariable Long id) {
+        PlaceModel place = placeService.getPlaceById(id);
+        if (place != null) {
+            return ResponseEntity.ok(new PlaceResp(place));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.notFound().build();
         }
     }
     @GetMapping
@@ -125,6 +119,11 @@ public class PlaceController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+    @GetMapping("/empty-unreserved-count")
+    public ResponseEntity<Long> countEmptyUnreservedPlaces() {
+        long count = placeService.countEmptyUnreservedPlaces();
+        return ResponseEntity.ok(count);
     }
     private final PlaceService placeService;
 }

@@ -27,9 +27,6 @@ public class PlaceService {
             return placeRep.findAll();
         }
     }
-    public List<PlaceModel> findAllByTypeOrStatus(Type_Place type, Status_Place status) {
-        return placeRep.findAllByTypeOrStatus(type, status);
-    }
     public List<PlaceModel> findAll(String se) {
         if(!se.isEmpty()) {
             return placeRep.findAllByTypeOrStatus(Type_Place.valueOf(se),Status_Place.valueOf(se));
@@ -53,14 +50,6 @@ public class PlaceService {
         }
         return list;
     }
-    private Status_Place getStatus(String input) {
-        for (Status_Place status_place : Status_Place.values()) {
-            if (status_place.name().equalsIgnoreCase(input)) {
-                return status_place;
-            }
-        }
-        throw new IllegalArgumentException("No enum constant found for input: " + input);
-    }
     public List<String> getAllTypes(){
         return enum_tToList(Type_Place.values());
     }
@@ -70,14 +59,6 @@ public class PlaceService {
             list.add(enumValue.name());
         }
         return list;
-    }
-    private Type_Place getTypes(String input) {
-        for (Type_Place type_place : Type_Place.values()) {
-            if (type_place.name().equalsIgnoreCase(input)) {
-                return type_place;
-            }
-        }
-        throw new IllegalArgumentException("No enum constant found for input: " + input);
     }
     public Page<PlaceModel> findAllPage(String se, Pageable p) {
         if (!se.isEmpty()) {
@@ -116,6 +97,12 @@ public class PlaceService {
         PlaceModel existingPlace = existingPlaceOptional.get();
         placeRep.deleteById(id);
         return existingPlace;
+    }
+    public PlaceModel getPlaceById(Long id) {
+        return placeRep.findById(id).orElse(null);
+    }
+    public long countEmptyUnreservedPlaces() {
+        return placeRep.countAllByStatusAndReservationsIsNull(Status_Place.vide);
     }
     private final PlaceRep placeRep;
 

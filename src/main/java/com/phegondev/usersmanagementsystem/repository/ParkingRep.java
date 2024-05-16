@@ -12,7 +12,6 @@ import java.util.List;
 public interface ParkingRep extends JpaRepository<ParkingModel, Long> {
 
     ParkingModel findByNom(String nom);
-    List<ParkingModel> findByEmplacement(String emplacement);
     List<ParkingModel>findAllByNomContainingOrEmplacementContaining(String nom,String emplacement);
     Page<ParkingModel> findAllByNomContainingOrEmplacementContaining(String nom, String emplacement, Pageable p);
 
