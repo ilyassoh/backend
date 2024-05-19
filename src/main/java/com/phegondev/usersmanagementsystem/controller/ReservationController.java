@@ -42,7 +42,7 @@ public class ReservationController {
     findAllPage(@RequestParam(defaultValue = "0") int page,
                 @RequestParam(defaultValue = "8") int size,
                 @RequestParam(defaultValue = "")String search
-               ){
+    ){
         Pageable pageable = PageRequest.of(page, size);
         Page<ReservationModel> reservations = reservationService.findAllPage(search, pageable);
         return  ResponseEntity.ok(reservations.map(ReservationResp::new));
@@ -56,6 +56,33 @@ public class ReservationController {
         }
         return ResponseEntity.ok(reservationsResp);
     }
+    @GetMapping("/place/{id}")
+    public ResponseEntity<List<ReservationResp>> getReservationsByPlaceId(@PathVariable Long id) {
+        List<ReservationModel> reservations = reservationService.getReservationsByPlaceId(id);
+        List<ReservationResp> reservationsResp = new ArrayList<>();
+        for (ReservationModel res : reservations) {
+            reservationsResp.add(new ReservationResp(res));
+        }
+        return ResponseEntity.ok(reservationsResp);
+    }
+    @GetMapping("/parking/{id}")
+    public ResponseEntity<List<ReservationResp>> getReservationsByParkingId(@PathVariable Long id) {
+        List<ReservationModel> reservations = reservationService.getReservationsByParkingId(id);
+        List<ReservationResp> reservationsResp = new ArrayList<>();
+        for (ReservationModel res : reservations) {
+            reservationsResp.add(new ReservationResp(res));
+        }
+        return ResponseEntity.ok(reservationsResp);
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<ReservationResp> getReservationById(@PathVariable Long id) {
+        ReservationModel reservation = reservationService.getReservationById(id);
+        if (reservation != null) {
+            return ResponseEntity.ok(new ReservationResp(reservation));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @PostMapping
     public ResponseEntity<?> createReservation(@Valid @RequestBody ReservationRequest reservationRequest) {
         ReservationModel reservationModel = reservationService.createReservation(reservationRequest);
@@ -66,7 +93,6 @@ public class ReservationController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating reservation");
         }
     }
-
     @Transactional
     @PutMapping("/{id}")
     public  ResponseEntity<?> editReservation(@PathVariable Long id, @Valid @RequestBody ReservationRequestUp reservationRequestUp) {

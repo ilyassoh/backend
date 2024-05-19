@@ -18,29 +18,30 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/api/client")
 @RequiredArgsConstructor
 public class ClientController {
+
+    private final ClientService clientService;
+
     @GetMapping("/nom/{nom}")
     public ResponseEntity<ClientResp> findByNom(@PathVariable String nom) {
         ClientModel clientModel = clientService.findByNom(nom);
         if (clientModel != null) {
-            ClientResp response = new ClientResp(clientModel);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ClientResp(clientModel));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.notFound().build();
         }
     }
+
     @GetMapping("/matricule/{numeroMatricule}")
     public ResponseEntity<ClientResp> findByNumeroMatricule(@PathVariable Long numeroMatricule) {
         ClientModel clientModel = clientService.findByNumeroMatricule(numeroMatricule);
         if (clientModel != null) {
-            ClientResp response = new ClientResp(clientModel);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ClientResp(clientModel));
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.notFound().build();
         }
     }
     @GetMapping
@@ -64,32 +65,38 @@ public class ClientController {
     public ResponseEntity<ClientResp> createClient(@Valid @RequestBody ClientRequest clientReq) {
         ClientModel clientModel = clientService.createClient(clientReq);
         if (clientModel != null) {
-            ClientResp response = new ClientResp(clientModel);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ClientResp(clientModel));
         } else {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
         }
     }
     @PutMapping("/{id}")
     public ResponseEntity<ClientResp> editClient(@PathVariable Long id, @Valid @RequestBody ClientRequestUp clientReqUp) {
         ClientModel clientModel = clientService.editClient(id, clientReqUp);
         if (clientModel != null) {
-            ClientResp response = new ClientResp(clientModel);
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(new ClientResp(clientModel));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
-    @Transactional
-    @DeleteMapping("/{id}")
-    public ResponseEntity<ClientResp> deleteClient(@PathVariable Long id) {
-        ClientResp response = new ClientResp(clientService.deleteClient(id));
-        if (response != null) {
-            return ResponseEntity.ok(response);
+    @GetMapping("/{id}")
+    public ResponseEntity<ClientResp> getClientById(@PathVariable Long id) {
+        ClientModel clientModel = clientService.getClientById(id);
+        if (clientModel != null) {
+            return ResponseEntity.ok(new ClientResp(clientModel));
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    private final ClientService clientService;
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ClientResp> deleteClient(@PathVariable Long id) {
+        ClientModel clientModel = clientService.deleteClient(id);
+        if (clientModel != null) {
+            return ResponseEntity.ok(new ClientResp(clientModel));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

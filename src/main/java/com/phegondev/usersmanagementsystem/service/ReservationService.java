@@ -63,21 +63,35 @@ public class ReservationService {
     public List<ReservationModel> getReservationsByClientId(Long clientId) {
         return reservationRep.findAllByClientId(clientId);
     }
+    public List<ReservationModel> getReservationsByPlaceId(Long placeId) {
+        return reservationRep.findByPlaceId(placeId);
+    }
+
+    public List<ReservationModel> getReservationsByParkingId(Long parkingId) {
+        return reservationRep.findByParkingId(parkingId);
+    }
+    public ReservationModel getReservationById(Long id) {
+        return reservationRep.findById(id).orElse(null);
+    }
     public ReservationModel createReservation(ReservationRequest reservationRequest) {
-        ReservationModel reservation = new ReservationModel();
         Long placeId = reservationRequest.getPlaceId();
         Long parkingId = reservationRequest.getParkingId();
         Long clientId = reservationRequest.getClientId();
         if (clientId == null) {
             throw new IllegalArgumentException("Client ID cannot be null");
         }
+        List<ReservationModel> existingReservations = reservationRep.findByPlaceIdAndStatus(placeId, Status_Reservation.confirmée);
+        if (!existingReservations.isEmpty()) {
+            throw new IllegalArgumentException("The place is already reserved");
+        }
         ClientModel client = clientRep.findById(clientId)
                 .orElseThrow(() -> new IllegalArgumentException("Client not found with ID: " + clientId));
         PlaceModel place = new PlaceModel();
         place.setId(placeId);
-        reservation.setPlace(place);
         ParkingModel parking = new ParkingModel();
         parking.setId(parkingId);
+        ReservationModel reservation = new ReservationModel();
+        reservation.setPlace(place);
         reservation.setParking(parking);
         reservation.setClient(client);
         reservation.setDate_entree(LocalDateTime.now());
@@ -86,8 +100,9 @@ public class ReservationService {
             Status_Reservation statusReservation = getStatus(statusString);
             reservation.setStatus(statusReservation);
         } else {
-            reservation.setStatus(Status_Reservation.en_attente); // ou tout autre statut par défaut que vous souhaitez utiliser
+            reservation.setStatus(Status_Reservation.en_attente); // default status
         }
+
         return reservationRep.save(reservation);
     }
 
