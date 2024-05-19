@@ -68,7 +68,8 @@ public class PlaceController {
         return ResponseEntity.ok(placesResp);
     }
     @GetMapping("/status/{status}")
-    public ResponseEntity<List<PlaceResp>> findAllByStatus(@PathVariable Status_Place status) {
+    public ResponseEntity<List<PlaceResp>> findAllByStatus(@RequestParam("status") Status_Place status) {
+
         List<PlaceModel> places = placeService.findAllByStatus(status);
         if (places != null && !places.isEmpty()) {
             List<PlaceResp> placesResp = new ArrayList<>();
@@ -80,6 +81,7 @@ public class PlaceController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
     @GetMapping("/types")
     public ResponseEntity<List<String>> getAllTypes() {
         return ResponseEntity.ok(placeService.getAllTypes());
